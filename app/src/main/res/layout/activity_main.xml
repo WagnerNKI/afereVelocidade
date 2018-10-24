@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="4"
+    android:rowCount="14"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/nome_bloco"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal"
+        android:text="Bloco"
+        android:textSize="30sp" />
+
+    <Spinner
+        android:id="@+id/spinner_bloco"
+        android:layout_width="200dp"
+        android:layout_height="51dp"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/nome_piso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="2"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:text="Piso"
+        android:textSize="30sp" />
+
+    <Spinner
+        android:id="@+id/spinner_piso"
+        android:layout_width="183dp"
+        android:layout_height="51dp"
+        android:layout_row="1"
+        android:layout_column="2"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/nome_responsavel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="2"
+        android:layout_column="1"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:text="Responsável"
+        android:textSize="30sp" />
+
+    <Spinner
+        android:id="@+id/spinner_responsavel"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_row="3"
+        android:layout_column="1"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/nome_placa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:text="Placa"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/placa_letra"
+        android:layout_width="138dp"
+        android:layout_height="wrap_content"
+        android:layout_row="5"
+        android:layout_column="0"
+        android:ems="3"
+        android:gravity="center"
+        android:hint="Letras"
+        android:imeOptions="actionNext"
+        android:inputType="textCapCharacters"
+        android:maxLength="3" />
+
+    <EditText
+        android:id="@+id/placa_numero"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_row="5"
+        android:layout_column="1"
+        android:ems="4"
+        android:gravity="center"
+        android:hint="Numeros"
+        android:inputType="number"
+        android:maxLength="4" />
+
+    <TextView
+        android:id="@+id/nome_veiculo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_column="2"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:text="Veículo"
+        android:textSize="30sp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/veiculo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="5"
+        android:layout_column="2"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:ems="15"
+        android:gravity="center"
+        android:hint="Marca ou Modelo"
+        android:inputType="textCapCharacters" />
+
+    <TextView
+        android:id="@+id/nome_velocidade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="6"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:text="Velocidade"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/velocidade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="7"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:hint="Velocidade"
+        android:inputType="number"
+        android:maxLength="2" />
+
+    <TextView
+        android:id="@+id/nome_cor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="6"
+        android:layout_column="2"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:text="Cor"
+        android:textSize="30sp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/cor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="7"
+        android:layout_column="2"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Cor"
+        android:inputType="textCapCharacters" />
+
+    <TextView
+        android:id="@+id/nome_cinto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="8"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:text="Cinto?"
+        android:textSize="30sp" />
+
+    <RadioGroup
+        android:id="@+id/cinto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="9"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/cinto_sim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="onRadioButtonClicked"
+            android:text="SIM"
+            android:textSize="25sp" />
+
+        <RadioButton
+            android:id="@+id/cinto_nao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="onRadioButtonClicked"
+            android:text="NÃO"
+            android:textSize="25sp" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/nome_infrator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="8"
+        android:layout_column="2"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:text="Infrator"
+        android:textSize="30sp" />
+
+    <RadioGroup
+        android:id="@+id/infrator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="9"
+        android:layout_column="2"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onRadioButtonClicked"
+            android:text="HIAE"
+            android:textSize="25sp" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onRadioButtonClicked"
+            android:text="INDIGO"
+            android:textSize="25sp" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:onClick="onRadioButtonClicked"
+            android:text="PRESTADOR"
+            android:textSize="25sp" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:onClick="onRadioButtonClicked"
+            android:text="OUTROS"
+            android:textSize="25sp" />
+
+    </RadioGroup>
+</GridLayout>

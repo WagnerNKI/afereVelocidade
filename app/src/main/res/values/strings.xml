@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">AfereVelocidade</string>
+
+    <string-array name="cores">
+        <item>BRANCO</item>
+        <item>VERMELHO</item>
+        <item>AMARELO</item>
+        <item>AZUL</item>
+        <item>VERDE</item>
+        <item>PRETO</item>
+        <item>BEGE</item>
+        <item>DOURADO</item>
+        <item>CINZA</item>
+        <item>PRATA</item>
+        <item>VINHO</item>
+        <item>MARROM</item>
+    </string-array>
+
+    <string-array name="veiculos">
+        <item>ACCORD</item>
+        <item>AGILE</item>
+        <item>AIRCROSS</item>
+        <item>AMAROK</item>
+        <item>ASX</item>
+        <item>AUDI</item>
+        <item>AZERA</item>
+        <item>ASTRA</item>
+        <item>BLAZER</item>
+        <item>BMW</item>
+        <item>BRAVO</item>
+        <item>C200</item>
+        <item>C3</item>
+        <item>CAPTIVA</item>
+        <item>CELTA</item>
+        <item>CHERRY</item>
+        <item>CHRYSLER</item>
+        <item>CITROEN</item>
+        <item>CITY</item>
+        <item>CIVIC</item>
+        <item>COBALT</item>
+        <item>COMPASS</item>
+        <item>COROLLA</item>
+        <item>CORSA</item>
+        <item>CRV</item>
+        <item></item>
+    </string-array>
+</resources>
+
