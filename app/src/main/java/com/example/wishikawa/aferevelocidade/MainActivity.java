@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView;
@@ -248,13 +250,35 @@ public class MainActivity extends AppCompatActivity {
         //Auto completar para o campo Cor
         AutoCompleteTextView textViewCor = (AutoCompleteTextView) findViewById(R.id.cor);
         String[] cores = getResources().getStringArray(R.array.cores);
-        ArrayAdapter<String> adapterCor = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,cores);
+        ArrayAdapter<String> adapterCor = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, cores);
         textViewCor.setAdapter(adapterCor);
 
         //Auto completar para o campo Veiculo
         AutoCompleteTextView textViewVeiculo = (AutoCompleteTextView) findViewById(R.id.veiculo);
         String[] veiculos = getResources().getStringArray(R.array.veiculos);
-        ArrayAdapter<String> adapterVeiculo = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,veiculos);
+        ArrayAdapter<String> adapterVeiculo = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, veiculos);
         textViewVeiculo.setAdapter(adapterVeiculo);
+
+
+        //ajustando para pegar a resposta dos itens de multipla escolha
+        final RadioGroup radioGroupCinto = (RadioGroup) findViewById(R.id.cinto);
+
+        radioGroupCinto.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                String usaCinto = ((RadioButton) findViewById(radioGroupCinto.getCheckedRadioButtonId())).getText().toString();
+                Toast.makeText(getApplicationContext(), usaCinto, Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        final RadioGroup radioGroupInfrator = (RadioGroup) findViewById(R.id.infrator);
+        radioGroupInfrator.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                String infrator = ((RadioButton) findViewById(radioGroupInfrator.getCheckedRadioButtonId())).getText().toString();
+                Toast.makeText(getApplicationContext(), infrator, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
