@@ -283,9 +283,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                placaLetraTexto[0] = placaLetra.getText().toString();
 
-                if (placaLetraTexto[0].length()==sizePlacaLetra){
+                if (placaLetra.getText().toString().length()==sizePlacaLetra){
                     placaNumero.requestFocus();
 
                 }
@@ -293,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+
 
             }
         });
