@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -39,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
         final int sizePlacaLetra = 3;
         final int sizePlacaNumero = 4;
         final int sizeVelocidade = 2;
+        final String[] placaLetraTexto = new String[]{};
+        final String[] placaNumeroTexto = new String[]{};
+        final String[] velocidadeTexto = new String[]{};
+        final String[] corTexto = new String[]{};
 
         //strings with the values for each level and block
         String[] bloco = new String[]{
@@ -133,24 +138,24 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItemText = (String) parent.getItemAtPosition(position);
+                String selectedItemBloco = (String) parent.getItemAtPosition(position);
 
                 if (position > 0) {
 
                     String piso[] = new String[]{};
                     String responsavel[] = new String[]{};
 
-                    if (position == 1) {
+                    if (selectedItemBloco== "A1") {
 
                         piso = pisoA1;
                         responsavel = respA1;
 
-                    } else if (position == 2) {
+                    } else if (selectedItemBloco== "Atrium") {
 
                         piso = pisoAtrium;
                         responsavel = respAtrium;
 
-                    } else if (position == 3) {
+                    } else if (selectedItemBloco == "Maternidade") {
 
                         piso = pisoMate;
                         responsavel = resplMaternidade;
@@ -194,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            String selectedItemText = (String) parent.getItemAtPosition(position);
+                            String selectedItemPiso = (String) parent.getItemAtPosition(position);
                         }
 
                         @Override
@@ -235,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     spinnerResp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                            String selectedItemResp = (String) parent.getItemAtPosition(position);
                         }
 
                         @Override
@@ -277,8 +282,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (placaLetra.getText().toString().length()==sizePlacaLetra){
+
+                placaLetraTexto[0] = placaLetra.getText().toString();
+
+                if (placaLetraTexto[0].length()==sizePlacaLetra){
                     placaNumero.requestFocus();
+
                 }
             }
 
@@ -352,6 +361,14 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 String infrator = ((RadioButton) findViewById(radioGroupInfrator.getCheckedRadioButtonId())).getText().toString();
                 Toast.makeText(getApplicationContext(), infrator, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Button btnGravarDados = (Button) findViewById(R.id.btn_gravaDados);
+        btnGravarDados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
