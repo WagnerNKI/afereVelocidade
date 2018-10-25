@@ -3,10 +3,13 @@ package com.example.wishikawa.aferevelocidade;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -30,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
         final Spinner spinnerBloco = (Spinner) findViewById(R.id.spinner_bloco);
         final Spinner spinnerPiso = (Spinner) findViewById(R.id.spinner_piso);
         final Spinner spinnerResp = (Spinner) findViewById(R.id.spinner_responsavel);
+        final EditText placaLetra = (EditText) findViewById(R.id.placa_letra);
+        final EditText placaNumero = (EditText) findViewById(R.id.placa_numero);
+        final EditText velocidade = (EditText)findViewById(R.id.velocidade);
+        final int sizePlacaLetra = 3;
+        final int sizePlacaNumero = 4;
+        final int sizeVelocidade = 2;
 
         //strings with the values for each level and block
         String[] bloco = new String[]{
@@ -248,18 +257,83 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Auto completar para o campo Cor
-        AutoCompleteTextView textViewCor = (AutoCompleteTextView) findViewById(R.id.cor);
-        String[] cores = getResources().getStringArray(R.array.cores);
-        ArrayAdapter<String> adapterCor = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, cores);
+        final AutoCompleteTextView textViewCor = (AutoCompleteTextView) findViewById(R.id.cor);
+        String[] listaCores = getResources().getStringArray(R.array.cores);
+        ArrayAdapter<String> adapterCor = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listaCores);
         textViewCor.setAdapter(adapterCor);
 
         //Auto completar para o campo Veiculo
-        AutoCompleteTextView textViewVeiculo = (AutoCompleteTextView) findViewById(R.id.veiculo);
-        String[] veiculos = getResources().getStringArray(R.array.veiculos);
-        ArrayAdapter<String> adapterVeiculo = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, veiculos);
+        final AutoCompleteTextView textViewVeiculo = (AutoCompleteTextView) findViewById(R.id.veiculo);
+        final String[] listaVeiculos = getResources().getStringArray(R.array.veiculos);
+        ArrayAdapter<String> adapterVeiculo = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listaVeiculos);
         textViewVeiculo.setAdapter(adapterVeiculo);
 
+        //nos EditText, o foco muda qunado atingido o número máx de caracteres
+        placaLetra.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (placaLetra.getText().toString().length()==sizePlacaLetra){
+                    placaNumero.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        placaNumero.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (placaNumero.getText().toString().length()==sizePlacaNumero){
+                    textViewVeiculo.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        velocidade.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (velocidade.getText().toString().length()==sizeVelocidade){
+                    textViewCor.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        //como veiculo tem caracter máximo que pode não ser atingido, mas possui um lista de sugestões,
+        //utiliza-se o click listener para saber quando alguém clicou em uma sugestão
+        textViewVeiculo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                velocidade.requestFocus();
+            }
+        });
         //ajustando para pegar a resposta dos itens de multipla escolha
         final RadioGroup radioGroupCinto = (RadioGroup) findViewById(R.id.cinto);
 

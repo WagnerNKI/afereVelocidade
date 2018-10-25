@@ -44,7 +44,70 @@
         <item>COROLLA</item>
         <item>CORSA</item>
         <item>CRV</item>
-        <item></item>
+        <item>CLIO</item>
+        <item>CRETA</item>
+        <item>CRUZE</item>
+        <item>ECOSPORT</item>
+        <item>ETIOS</item>
+        <item>FIESTA</item>
+        <item>FIORINO</item>
+        <item>FIT</item>
+        <item>FLUENCE</item>
+        <item>CHEVROLET</item>
+        <item>FORD</item>
+        <item>FUSION</item>
+        <item>FORESTER</item>
+        <item>FOX</item>
+        <item>FREELANDER</item>
+        <item>GOL</item>
+        <item>GOLF</item>
+        <item>HB20</item>
+        <item>HONDA</item>
+        <item>HRV</item>
+        <item>HYUNDAI</item>
+        <item>I30</item>
+        <item>IX35</item>
+        <item>JAC</item>
+        <item>JAGUAR</item>
+        <item>JEEP</item>
+        <item>JETTA</item>
+        <item>KIA</item>
+        <item>KWID</item>
+        <item>LAND ROVER</item>
+        <item>LIVINA</item>
+        <item>LOGAN</item>
+        <item>MARCH</item>
+        <item>MERCEDES</item>
+        <item>MERIVA</item>
+        <item>MITSUBISHI</item>
+        <item>NISSAN</item>
+        <item>ONIX</item>
+        <item>OUTLANDER</item>
+        <item>P206</item>
+        <item>PAJERO</item>
+        <item>PEUGEOT</item>
+        <item>POLO</item>
+        <item>PORSHE</item>
+        <item>PRISMA</item>
+        <item>PUNTO</item>
+        <item>RANGE ROVER</item>
+        <item>RENAULT</item>
+        <item>SANDERO</item>
+        <item>SANTA FE</item>
+        <item>SMART</item>
+        <item>SPIN</item>
+        <item>SUBARU</item>
+        <iteml>TORO</iteml>
+        <item>TOUAREG</item>
+        <item>TOYOTA</item>
+        <item>TUCSON</item>
+        <item>TR4</item>
+        <item>TRACKER</item>
+        <item>UNO</item>
+        <item>UP</item>
+        <item>VECTRA</item>
+        <item>VOLVO</item>
+        <item>VOLKSWAGEN</item>
     </string-array>
 </resources>
 
