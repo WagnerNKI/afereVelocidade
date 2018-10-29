@@ -1,6 +1,8 @@
 package com.example.wishikawa.aferevelocidade;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,6 +26,18 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private String plateLetterText;
+    private String plateNumberText;
+    private String velocityText;
+    private String colorText;
+    private String selectedBlock;
+    private String selectedFloor;
+    private String selectedResponsible;
+    private String offenderText;
+    private String beltText;
+    private String vehicleText;
+    public static final String PREFS_NAME = "velocityChecker";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,36 +45,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //associating the spinner
-        final Spinner spinnerBloco = (Spinner) findViewById(R.id.spinner_bloco);
-        final Spinner spinnerPiso = (Spinner) findViewById(R.id.spinner_piso);
-        final Spinner spinnerResp = (Spinner) findViewById(R.id.spinner_responsavel);
-        final EditText placaLetra = (EditText) findViewById(R.id.placa_letra);
-        final EditText placaNumero = (EditText) findViewById(R.id.placa_numero);
-        final EditText velocidade = (EditText)findViewById(R.id.velocidade);
-        final int sizePlacaLetra = 3;
-        final int sizePlacaNumero = 4;
-        final int sizeVelocidade = 2;
-        final String[] placaLetraTexto = new String[]{};
-        final String[] placaNumeroTexto = new String[]{};
-        final String[] velocidadeTexto = new String[]{};
-        final String[] corTexto = new String[]{};
+        final Spinner blockSpinner = (Spinner) findViewById(R.id.spinner_block);
+        final Spinner floorSpinner = (Spinner) findViewById(R.id.spinner_floor);
+        final Spinner responsibleSpinner = (Spinner) findViewById(R.id.spinner_responsible);
+        final EditText plateLetter = (EditText) findViewById(R.id.plate_letter);
+        final EditText plateNumber = (EditText) findViewById(R.id.plate_number);
+        final EditText velocity = (EditText) findViewById(R.id.velocity);
+        final int sizePlateLetter = 3;
+        final int sizePlateNumber = 4;
+        final int sizeVelocity = 2;
 
         //strings with the values for each level and block
-        String[] bloco = new String[]{
+        final String[] block = new String[]{
                 "",
                 "A1",
                 "Atrium",
                 "Maternidade"
         };
 
-        final String[] pisoA1 = new String[]{
+        final String[] a1Floor = new String[]{
                 "",
                 "G1",
                 "G2",
                 "G3"
         };
 
-        final String[] pisoMate = new String[]{
+        final String[] mateFloor = new String[]{
                 "",
                 "-1",
                 "-2",
@@ -90,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 "Maurílio"
         };
 
-        final String[] resplMaternidade = new String[]{
+        final String[] respMaternidade = new String[]{
                 "",
                 "Joel",
                 "Silvano",
@@ -101,11 +111,11 @@ public class MainActivity extends AppCompatActivity {
                 "Rogério"
         };
         //associating the spinner and the string
-        final List<String> blocoList = new ArrayList<>(Arrays.asList(bloco));
+        final List<String> blockList = new ArrayList<>(Arrays.asList(block));
 
-        final ArrayAdapter<String> spinnerBlocoArrayAdapter = new ArrayAdapter<String>(
-                this, R.layout.spinner_item, blocoList) {
-
+        final ArrayAdapter<String> blockSpinnerArrayAdapter = new ArrayAdapter<String>(
+                this, R.layout.spinner_item, blockList) {
+            //disabling the first option (blank option)
             @Override
             public boolean isEnabled(int position) {
                 if (position == 0) {
@@ -129,43 +139,44 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        spinnerBlocoArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-        spinnerBloco.setAdapter(spinnerBlocoArrayAdapter);
+        blockSpinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        blockSpinner.setAdapter(blockSpinnerArrayAdapter);
 
-        spinnerBloco.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        blockSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 
         {
-
+            //changing the string in the floor and responsible spinners depending on the block spinner
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItemBloco = (String) parent.getItemAtPosition(position);
+                selectedBlock = (String) parent.getItemAtPosition(position);
 
                 if (position > 0) {
 
-                    String piso[] = new String[]{};
-                    String responsavel[] = new String[]{};
 
-                    if (selectedItemBloco== "A1") {
+                    String floor[] = new String[]{};
+                    String responsible[] = new String[]{};
 
-                        piso = pisoA1;
-                        responsavel = respA1;
+                    if (selectedBlock == "A1") {
 
-                    } else if (selectedItemBloco== "Atrium") {
+                        floor = a1Floor;
+                        responsible = respA1;
 
-                        piso = pisoAtrium;
-                        responsavel = respAtrium;
+                    } else if (selectedBlock == "Atrium") {
 
-                    } else if (selectedItemBloco == "Maternidade") {
+                        floor = pisoAtrium;
+                        responsible = respAtrium;
 
-                        piso = pisoMate;
-                        responsavel = resplMaternidade;
+                    } else if (selectedBlock == "Maternidade") {
+
+                        floor = mateFloor;
+                        responsible = respMaternidade;
                     }
 
-                    final List<String> pisoList = new ArrayList<>(Arrays.asList(piso));
-                    final List<String> respList = new ArrayList<>(Arrays.asList(responsavel));
+                    final List<String> floorList = new ArrayList<>(Arrays.asList(floor));
+                    final List<String> respList = new ArrayList<>(Arrays.asList(responsible));
 
-                    final ArrayAdapter<String> spinnerPisoArrayAdapter = new ArrayAdapter<String>(
-                            MainActivity.this, R.layout.spinner_item, pisoList) {
+                    final ArrayAdapter<String> floorSpinnerArrayAdapter = new ArrayAdapter<String>(
+                            MainActivity.this, R.layout.spinner_item, floorList) {
 
                         @Override
                         public boolean isEnabled(int position) {
@@ -190,16 +201,16 @@ public class MainActivity extends AppCompatActivity {
                         }
                     };
 
-                    spinnerPisoArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-                    spinnerPiso.setAdapter(spinnerPisoArrayAdapter);
+                    floorSpinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+                    floorSpinner.setAdapter(floorSpinnerArrayAdapter);
 
-                    spinnerPiso.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+                    floorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 
                     {
 
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            String selectedItemPiso = (String) parent.getItemAtPosition(position);
+                            selectedFloor = (String) parent.getItemAtPosition(position);
                         }
 
                         @Override
@@ -235,12 +246,12 @@ public class MainActivity extends AppCompatActivity {
                     };
 
                     spinnerRespArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-                    spinnerResp.setAdapter(spinnerRespArrayAdapter);
+                    responsibleSpinner.setAdapter(spinnerRespArrayAdapter);
 
-                    spinnerResp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    responsibleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            String selectedItemResp = (String) parent.getItemAtPosition(position);
+                            selectedResponsible = (String) parent.getItemAtPosition(position);
                         }
 
                         @Override
@@ -261,20 +272,20 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        //Auto completar para o campo Cor
-        final AutoCompleteTextView textViewCor = (AutoCompleteTextView) findViewById(R.id.cor);
-        String[] listaCores = getResources().getStringArray(R.array.cores);
-        ArrayAdapter<String> adapterCor = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listaCores);
-        textViewCor.setAdapter(adapterCor);
+        //Auto complete to color field
+        final AutoCompleteTextView textViewColor = (AutoCompleteTextView) findViewById(R.id.cor);
+        String[] colorsList = getResources().getStringArray(R.array.cores);
+        ArrayAdapter<String> adapterColor = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, colorsList);
+        textViewColor.setAdapter(adapterColor);
 
-        //Auto completar para o campo Veiculo
-        final AutoCompleteTextView textViewVeiculo = (AutoCompleteTextView) findViewById(R.id.veiculo);
-        final String[] listaVeiculos = getResources().getStringArray(R.array.veiculos);
-        ArrayAdapter<String> adapterVeiculo = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listaVeiculos);
-        textViewVeiculo.setAdapter(adapterVeiculo);
+        //Auto complete to vehicle field
+        final AutoCompleteTextView textViewVeihicle = (AutoCompleteTextView) findViewById(R.id.veiculo);
+        final String[] vehiclesList = getResources().getStringArray(R.array.veiculos);
+        ArrayAdapter<String> adapterVehicle = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, vehiclesList);
+        textViewVeihicle.setAdapter(adapterVehicle);
 
-        //nos EditText, o foco muda qunado atingido o número máx de caracteres
-        placaLetra.addTextChangedListener(new TextWatcher() {
+        //in the EditText, the focus (selected field) changes when each field reaches its max value
+        plateLetter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -283,9 +294,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+                plateLetterText = plateLetter.getText().toString();
 
-                if (placaLetra.getText().toString().length()==sizePlacaLetra){
-                    placaNumero.requestFocus();
+                if (plateLetterText.length() == sizePlateLetter) {
+                    plateNumber.requestFocus();
 
                 }
             }
@@ -297,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        placaNumero.addTextChangedListener(new TextWatcher() {
+        plateNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -305,8 +317,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (placaNumero.getText().toString().length()==sizePlacaNumero){
-                    textViewVeiculo.requestFocus();
+
+                plateNumberText = plateNumber.getText().toString();
+
+                if (plateNumberText.length() == sizePlateNumber) {
+                    textViewVeihicle.requestFocus();
+
                 }
             }
 
@@ -316,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        velocidade.addTextChangedListener(new TextWatcher() {
+        velocity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -324,8 +340,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (velocidade.getText().toString().length()==sizeVelocidade){
-                    textViewCor.requestFocus();
+
+                velocityText = velocity.getText().toString();
+
+                if (velocityText.length() == sizeVelocity) {
+                    textViewColor.requestFocus();
                 }
             }
 
@@ -335,39 +354,103 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //como veiculo tem caracter máximo que pode não ser atingido, mas possui um lista de sugestões,
-        //utiliza-se o click listener para saber quando alguém clicou em uma sugestão
-        textViewVeiculo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //vehicle field has no maximum caracter limit, so a click listener is set when a suggestion is selected
+        textViewVeihicle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                velocidade.requestFocus();
+                velocity.requestFocus();
+
             }
         });
-        //ajustando para pegar a resposta dos itens de multipla escolha
-        final RadioGroup radioGroupCinto = (RadioGroup) findViewById(R.id.cinto);
 
-        radioGroupCinto.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+        //getting the values of each RadioButton selected
+        final RadioGroup radioGroupBelt = (RadioGroup) findViewById(R.id.belt);
+
+        radioGroupBelt.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                String usaCinto = ((RadioButton) findViewById(radioGroupCinto.getCheckedRadioButtonId())).getText().toString();
-                Toast.makeText(getApplicationContext(), usaCinto, Toast.LENGTH_LONG).show();
+                beltText = ((RadioButton) findViewById(radioGroupBelt.getCheckedRadioButtonId())).getText().toString();
 
             }
         });
 
-        final RadioGroup radioGroupInfrator = (RadioGroup) findViewById(R.id.infrator);
-        radioGroupInfrator.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        final RadioGroup radioGroupOffender = (RadioGroup) findViewById(R.id.infrator);
+        radioGroupOffender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                String infrator = ((RadioButton) findViewById(radioGroupInfrator.getCheckedRadioButtonId())).getText().toString();
-                Toast.makeText(getApplicationContext(), infrator, Toast.LENGTH_LONG).show();
+                offenderText = ((RadioButton) findViewById(radioGroupOffender.getCheckedRadioButtonId())).getText().toString();
+
             }
         });
 
-        Button btnGravarDados = (Button) findViewById(R.id.btn_gravaDados);
-        btnGravarDados.setOnClickListener(new View.OnClickListener() {
+        Button btnSaveData = (Button) findViewById(R.id.btn_gravaDados);
+        btnSaveData.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
+                //in case some values are empty, display an alert show which ones need to be completed
+                String emptyValues = "";
+                if (selectedBlock == "" || selectedFloor == null || plateLetterText == null
+                        || plateNumberText == null || vehicleText == null || offenderText == null) {
+
+                    if (selectedBlock == "") {
+                        emptyValues += "Bloco, ";
+                    }
+
+                    if (selectedFloor == null) {
+                        emptyValues += "Piso, ";
+                    }
+
+                    if (plateLetterText == null || plateNumberText == null) {
+                        emptyValues += "Placa, ";
+                    }
+
+                    if (vehicleText == null) {
+                        emptyValues += "Veículo, ";
+                    }
+
+                    if (offenderText == null) {
+                        emptyValues += "Infrator.";
+                    }
+
+                    //showing alert in case any of the above values is empty
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Falta completar:");
+                    builder.setMessage(emptyValues);
+
+                    builder.setPositiveButton("Ok", null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    TextView textView = (TextView) dialog.findViewById(android.R.id.message);
+                    textView.setTextSize(30);
+
+                } else {
+
+                    //in case vehicle and color are not completed using auto complete,
+                    //get the values written
+                    vehicleText = textViewVeihicle.getText().toString();
+                    colorText = textViewColor.getText().toString();
+                    String plateComplete = plateLetterText + "-" + plateNumberText;
+
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME,0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("block",selectedBlock);
+                    editor.putString("floor", selectedFloor);
+                    editor.putString("responsible", selectedResponsible);
+                    editor.putString("plate",plateComplete);
+                    editor.putString("vehicle",vehicleText);
+                    editor.putString("velocity",velocityText);
+                    editor.putString("color",colorText);
+                    editor.putString("belt",beltText);
+                    editor.putString("offender",offenderText);
+
+                    editor.apply();
+
+                    Toast.makeText(getApplicationContext(), vehicleText, Toast.LENGTH_LONG).show();
+                }
 
             }
         });

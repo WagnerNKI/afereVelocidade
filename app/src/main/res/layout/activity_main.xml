@@ -22,7 +22,7 @@
         android:padding="10dp"/>
 
     <Spinner
-        android:id="@+id/spinner_bloco"
+        android:id="@+id/spinner_block"
         android:layout_width="200dp"
         android:layout_height="51dp"
         android:layout_row="1"
@@ -44,7 +44,7 @@
         android:padding="10dp"/>
 
     <Spinner
-        android:id="@+id/spinner_piso"
+        android:id="@+id/spinner_floor"
         android:layout_width="183dp"
         android:layout_height="51dp"
         android:layout_row="1"
@@ -66,7 +66,7 @@
         android:layout_marginTop="20dp"/>
 
     <Spinner
-        android:id="@+id/spinner_responsavel"
+        android:id="@+id/spinner_responsible"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_row="4"
@@ -88,7 +88,7 @@
         android:padding="10dp"/>
 
     <EditText
-        android:id="@+id/placa_letra"
+        android:id="@+id/plate_letter"
         android:layout_width="138dp"
         android:layout_height="wrap_content"
         android:layout_row="6"
@@ -102,7 +102,7 @@
         />
 
     <EditText
-        android:id="@+id/placa_numero"
+        android:id="@+id/plate_number"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_row="6"
@@ -151,7 +151,7 @@
         android:layout_marginTop="20dp"/>
 
     <EditText
-        android:id="@+id/velocidade"
+        android:id="@+id/velocity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_row="8"
@@ -201,7 +201,7 @@
         android:layout_marginTop="20dp"/>
 
     <RadioGroup
-        android:id="@+id/cinto"
+        android:id="@+id/belt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_row="10"
@@ -211,7 +211,7 @@
         android:orientation="vertical">
 
         <RadioButton
-            android:id="@+id/cinto_sim"
+            android:id="@+id/belt_yes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -219,7 +219,7 @@
             android:textSize="20sp" />
 
         <RadioButton
-            android:id="@+id/cinto_nao"
+            android:id="@+id/belt_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
