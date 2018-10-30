@@ -1,5 +1,6 @@
 package com.example.wishikawa.aferevelocidade;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
@@ -21,9 +22,17 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.SimpleTimeZone;
 
 public class MainActivity extends AppCompatActivity {
     private String plateLetterText;
@@ -273,16 +282,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //Auto complete to color field
-        final AutoCompleteTextView textViewColor = (AutoCompleteTextView) findViewById(R.id.cor);
+        final AutoCompleteTextView autoCompleteColor = (AutoCompleteTextView) findViewById(R.id.cor);
         String[] colorsList = getResources().getStringArray(R.array.cores);
         ArrayAdapter<String> adapterColor = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, colorsList);
-        textViewColor.setAdapter(adapterColor);
+        autoCompleteColor.setAdapter(adapterColor);
 
         //Auto complete to vehicle field
-        final AutoCompleteTextView textViewVeihicle = (AutoCompleteTextView) findViewById(R.id.veiculo);
+        final AutoCompleteTextView autoCompleteVehicle = (AutoCompleteTextView) findViewById(R.id.veiculo);
         final String[] vehiclesList = getResources().getStringArray(R.array.veiculos);
         ArrayAdapter<String> adapterVehicle = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, vehiclesList);
-        textViewVeihicle.setAdapter(adapterVehicle);
+        autoCompleteVehicle.setAdapter(adapterVehicle);
 
         //in the EditText, the focus (selected field) changes when each field reaches its max value
         plateLetter.addTextChangedListener(new TextWatcher() {
@@ -321,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                 plateNumberText = plateNumber.getText().toString();
 
                 if (plateNumberText.length() == sizePlateNumber) {
-                    textViewVeihicle.requestFocus();
+                    autoCompleteVehicle.requestFocus();
 
                 }
             }
@@ -344,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
                 velocityText = velocity.getText().toString();
 
                 if (velocityText.length() == sizeVelocity) {
-                    textViewColor.requestFocus();
+                    autoCompleteColor.requestFocus();
                 }
             }
 
@@ -355,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //vehicle field has no maximum caracter limit, so a click listener is set when a suggestion is selected
-        textViewVeihicle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        autoCompleteVehicle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -371,8 +380,13 @@ public class MainActivity extends AppCompatActivity {
         radioGroupBelt.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                beltText = ((RadioButton) findViewById(radioGroupBelt.getCheckedRadioButtonId())).getText().toString();
 
+
+                RadioButton belt = (RadioButton) findViewById(radioGroupBelt.getCheckedRadioButtonId());
+
+                if (belt != null) {
+                    beltText = belt.getText().toString();
+                }
             }
         });
 
@@ -380,16 +394,26 @@ public class MainActivity extends AppCompatActivity {
         radioGroupOffender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                offenderText = ((RadioButton) findViewById(radioGroupOffender.getCheckedRadioButtonId())).getText().toString();
 
+                RadioButton offender = (RadioButton) findViewById(radioGroupOffender.getCheckedRadioButtonId());
+
+                if (offender != null) {
+                    offenderText = offender.getText().toString();
+                }
             }
         });
 
         Button btnSaveData = (Button) findViewById(R.id.btn_gravaDados);
         btnSaveData.setOnClickListener(new View.OnClickListener() {
 
+
             @Override
             public void onClick(View v) {
+
+                //in case vehicle and color are not completed using auto complete,
+                //get the values written
+                vehicleText = autoCompleteVehicle.getText().toString();
+                colorText = autoCompleteColor.getText().toString();
 
                 //in case some values are empty, display an alert show which ones need to be completed
                 String emptyValues = "";
@@ -429,30 +453,70 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
 
-                    //in case vehicle and color are not completed using auto complete,
-                    //get the values written
-                    vehicleText = textViewVeihicle.getText().toString();
-                    colorText = textViewColor.getText().toString();
                     String plateComplete = plateLetterText + "-" + plateNumberText;
 
-                    SharedPreferences settings = getSharedPreferences(PREFS_NAME,0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("block",selectedBlock);
-                    editor.putString("floor", selectedFloor);
-                    editor.putString("responsible", selectedResponsible);
-                    editor.putString("plate",plateComplete);
-                    editor.putString("vehicle",vehicleText);
-                    editor.putString("velocity",velocityText);
-                    editor.putString("color",colorText);
-                    editor.putString("belt",beltText);
-                    editor.putString("offender",offenderText);
+                    //getting date and time from the system when the button is pressed and
+                    //the minimum information is complete
+                    java.util.Date currentTimeandDate = Calendar.getInstance().getTime();
 
-                    editor.apply();
+                    //getting the time using 24h time format
+                    DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                    String currentTime = timeFormat.format(currentTimeandDate);
 
-                    Toast.makeText(getApplicationContext(), vehicleText, Toast.LENGTH_LONG).show();
+                    //getting the date
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    String currentDate = dateFormat.format(currentTimeandDate);
+
+                    //setting the writable string and the file where data will be saved
+                    String filename = "DadosVelocidade";
+                    String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
+                            currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
+                            colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
+                    FileOutputStream outputStream;
+
+                    try {
+                        //writting data to the file
+                        outputStream = openFileOutput(filename, Context.MODE_APPEND);
+                        outputStream.write(dataSave.getBytes());
+                        outputStream.close();
+
+                        Toast.makeText(getApplicationContext(), "Dados Salvos", Toast.LENGTH_LONG).show();
+
+                        //erasing the values in some fields
+                        radioGroupBelt.clearCheck();
+                        radioGroupOffender.clearCheck();
+                        plateLetter.getText().clear();
+                        plateNumber.getText().clear();
+                        autoCompleteVehicle.getText().clear();
+                        velocity.getText().clear();
+                        autoCompleteColor.getText().clear();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    try {
+                        FileInputStream fileInputStream = openFileInput(filename);
+                        int c;
+
+                        String temp = "";
+                        while ((c = fileInputStream.read()) != -1) {
+                            temp += Character.toString((char) c);
+                        }
+                        System.out.println(temp);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
             }
         });
+
+
     }
 }
+
+
+

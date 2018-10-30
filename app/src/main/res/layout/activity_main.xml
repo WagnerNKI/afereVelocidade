@@ -136,7 +136,8 @@
         android:ems="15"
         android:gravity="center"
         android:hint="Marca ou Modelo"
-        android:inputType="textCapCharacters" />
+        android:inputType="textCapCharacters"
+        android:imeOptions="actionNext"/>
 
     <TextView
         android:id="@+id/nome_velocidade"
@@ -186,7 +187,8 @@
         android:ems="10"
         android:gravity="center"
         android:hint="Cor"
-        android:inputType="textCapCharacters" />
+        android:inputType="textCapCharacters"
+        android:imeOptions="actionDone"/>
 
     <TextView
         android:id="@+id/nome_cinto"
