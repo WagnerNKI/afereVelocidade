@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:columnCount="4"
-    android:rowCount="14"
+    android:rowCount="15"
     tools:context=".MainActivity">
 
 
@@ -17,9 +17,9 @@
         android:layout_column="0"
         android:layout_columnSpan="2"
         android:layout_gravity="center_horizontal"
+        android:padding="10dp"
         android:text="Bloco"
-        android:textSize="30sp"
-        android:padding="10dp"/>
+        android:textSize="30sp" />
 
     <Spinner
         android:id="@+id/spinner_block"
@@ -29,7 +29,7 @@
         android:layout_column="0"
         android:layout_columnSpan="2"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp" />
 
     <TextView
         android:id="@+id/nome_piso"
@@ -39,9 +39,9 @@
         android:layout_column="2"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:text="Piso"
-        android:textSize="30sp"
-        android:padding="10dp"/>
+        android:textSize="30sp" />
 
     <Spinner
         android:id="@+id/spinner_floor"
@@ -51,7 +51,7 @@
         android:layout_column="2"
         android:layout_columnSpan="2"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp" />
 
     <TextView
         android:id="@+id/nome_responsavel"
@@ -61,9 +61,9 @@
         android:layout_column="1"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:text="Responsável"
-        android:textSize="30sp"
-        android:layout_marginTop="20dp"/>
+        android:textSize="30sp" />
 
     <Spinner
         android:id="@+id/spinner_responsible"
@@ -73,7 +73,7 @@
         android:layout_column="1"
         android:layout_columnSpan="2"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginBottom="5dp" />
 
     <TextView
         android:id="@+id/nome_placa"
@@ -83,9 +83,9 @@
         android:layout_column="0"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:text="Placa"
-        android:textSize="30sp"
-        android:padding="10dp"/>
+        android:textSize="30sp" />
 
     <EditText
         android:id="@+id/plate_letter"
@@ -98,8 +98,7 @@
         android:hint="Letras"
         android:imeOptions="actionNext"
         android:inputType="textCapCharacters"
-        android:maxLength="3"
-        />
+        android:maxLength="3" />
 
     <EditText
         android:id="@+id/plate_number"
@@ -110,6 +109,7 @@
         android:ems="4"
         android:gravity="center"
         android:hint="Numeros"
+        android:imeOptions="actionNext"
         android:inputType="number"
         android:maxLength="4" />
 
@@ -121,9 +121,9 @@
         android:layout_column="2"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:text="Veículo"
-        android:textSize="30sp"
-        android:padding="10dp"/>
+        android:textSize="30sp" />
 
     <AutoCompleteTextView
         android:id="@+id/veiculo"
@@ -133,11 +133,12 @@
         android:layout_column="2"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:completionThreshold="1"
         android:ems="15"
         android:gravity="center"
         android:hint="Marca ou Modelo"
-        android:inputType="textCapCharacters"
-        android:imeOptions="actionNext"/>
+        android:imeOptions="actionNext"
+        android:inputType="textCapCharacters" />
 
     <TextView
         android:id="@+id/nome_velocidade"
@@ -147,9 +148,9 @@
         android:layout_column="0"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:text="Velocidade"
-        android:textSize="30sp"
-        android:layout_marginTop="20dp"/>
+        android:textSize="30sp" />
 
     <EditText
         android:id="@+id/velocity"
@@ -161,6 +162,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:hint="Velocidade"
+        android:imeOptions="actionNext"
         android:inputType="number"
         android:maxLength="2" />
 
@@ -172,9 +174,9 @@
         android:layout_column="2"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:text="Cor"
-        android:textSize="30sp"
-        android:layout_marginTop="20dp"/>
+        android:textSize="30sp" />
 
     <AutoCompleteTextView
         android:id="@+id/cor"
@@ -184,11 +186,12 @@
         android:layout_column="2"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:completionThreshold="1"
         android:ems="10"
         android:gravity="center"
         android:hint="Cor"
-        android:inputType="textCapCharacters"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:inputType="textCapCharacters" />
 
     <TextView
         android:id="@+id/nome_cinto"
@@ -198,9 +201,9 @@
         android:layout_column="0"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:text="Cinto?"
-        android:textSize="30sp"
-        android:layout_marginTop="20dp"/>
+        android:textSize="30sp" />
 
     <RadioGroup
         android:id="@+id/belt"
@@ -237,9 +240,9 @@
         android:layout_column="2"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:text="Infrator"
-        android:textSize="30sp"
-        android:layout_marginTop="20dp"/>
+        android:textSize="30sp" />
 
     <RadioGroup
         android:id="@+id/infrator"
@@ -282,15 +285,26 @@
     </RadioGroup>
 
     <Button
-        android:id="@+id/btn_gravaDados"
-        android:layout_height="wrap_content"
+        android:id="@+id/btn_recordData"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_row="11"
         android:layout_column="1"
         android:layout_columnSpan="2"
         android:layout_gravity="center"
-        android:text="Gravar Dados"
-        android:textSize="30sp"
         android:layout_marginTop="30dp"
-        />
+        android:text="Gravar Dados"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btn_exportData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="13"
+        android:layout_column="1"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:text="Exportar Dados"
+        android:textSize="30sp" />
 </GridLayout>

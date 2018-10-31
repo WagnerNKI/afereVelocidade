@@ -1,7 +1,6 @@
 package com.example.wishikawa.aferevelocidade;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,16 +22,13 @@ import android.widget.Toast;
 
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.SimpleTimeZone;
 
 public class MainActivity extends AppCompatActivity {
     private String plateLetterText;
@@ -45,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private String offenderText;
     private String beltText;
     private String vehicleText;
-    public static final String PREFS_NAME = "velocityChecker";
 
 
     @Override
@@ -384,6 +379,8 @@ public class MainActivity extends AppCompatActivity {
 
                 RadioButton belt = (RadioButton) findViewById(radioGroupBelt.getCheckedRadioButtonId());
 
+                //when the radio button is checked, get the value of it, so,
+                // when the radio group is unchecked, it will try to get a value, but there won't be one
                 if (belt != null) {
                     beltText = belt.getText().toString();
                 }
@@ -403,7 +400,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btnSaveData = (Button) findViewById(R.id.btn_gravaDados);
+        //declaring the name of the file in internal storage to have data saved and read
+        final String filename = "DadosVelocidade";
+        Button btnSaveData = (Button) findViewById(R.id.btn_recordData);
         btnSaveData.setOnClickListener(new View.OnClickListener() {
 
 
@@ -417,8 +416,9 @@ public class MainActivity extends AppCompatActivity {
 
                 //in case some values are empty, display an alert show which ones need to be completed
                 String emptyValues = "";
-                if (selectedBlock == "" || selectedFloor == null || plateLetterText == null
-                        || plateNumberText == null || vehicleText == null || offenderText == null) {
+                if (selectedBlock == "" || selectedFloor == "" || plateLetterText == null
+                        || plateNumberText == null || vehicleText.isEmpty() || velocityText == null
+                        || offenderText == null) {
 
                     if (selectedBlock == "") {
                         emptyValues += "Bloco, ";
@@ -432,10 +432,13 @@ public class MainActivity extends AppCompatActivity {
                         emptyValues += "Placa, ";
                     }
 
-                    if (vehicleText == null) {
+                    if (vehicleText.isEmpty()) {
                         emptyValues += "Veículo, ";
                     }
 
+                    if (velocityText == null) {
+                        emptyValues += "Velocidade, ";
+                    }
                     if (offenderText == null) {
                         emptyValues += "Infrator.";
                     }
@@ -468,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
                     String currentDate = dateFormat.format(currentTimeandDate);
 
                     //setting the writable string and the file where data will be saved
-                    String filename = "DadosVelocidade";
+
                     String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
                             currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
                             colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
@@ -496,20 +499,30 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    try {
-                        FileInputStream fileInputStream = openFileInput(filename);
-                        int c;
-
-                        String temp = "";
-                        while ((c = fileInputStream.read()) != -1) {
-                            temp += Character.toString((char) c);
-                        }
-                        System.out.println(temp);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
                 }
+
+            }
+        });
+
+        Button exportData = (Button) findViewById(R.id.btn_exportData);
+
+        exportData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    FileInputStream fileInputStream = openFileInput(filename);
+                    int c;
+
+                    String temp = "";
+                    while ((c = fileInputStream.read()) != -1) {
+                        temp += Character.toString((char) c);
+                    }
+                    System.out.println(temp);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
 
             }
         });
