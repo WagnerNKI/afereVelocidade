@@ -2,6 +2,7 @@ package com.example.wishikawa.aferevelocidade;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.nfc.Tag;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
     private String offenderText;
     private String beltText;
     private String vehicleText;
+    private String plateComplete;
+    private String currentDate;
+    private String currentTime;
+
+    //declaring the name of the file in internal storage to have data saved and read
+    private String filename = "DadosVelocidade";
 
 
     @Override
@@ -357,9 +364,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                velocityText = velocity.getText().toString();
 
-                if (velocityText.length() == sizeVelocity) {
+                if (velocity.getText().toString().length() == sizeVelocity) {
                     autoCompleteColor.requestFocus();
                 }
             }
@@ -412,8 +418,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //declaring the name of the file in internal storage to have data saved and read
-        final String filename = "DadosVelocidade";
+
         Button btnSaveData = (Button) findViewById(R.id.btn_recordData);
 
         btnSaveData.setOnClickListener(new View.OnClickListener() {
@@ -426,6 +431,7 @@ public class MainActivity extends AppCompatActivity {
                 //get the values written
                 vehicleText = autoCompleteVehicle.getText().toString();
                 colorText = autoCompleteColor.getText().toString();
+                velocityText = velocity.getText().toString();
 
                 //in case some values are empty, display an alert show which ones need to be completed
                 String emptyValues = "";
@@ -469,7 +475,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
 
-                    String plateComplete = plateLetterText + "-" + plateNumberText;
+                    plateComplete = plateLetterText + "-" + plateNumberText;
 
                     //getting date and time from the system when the button is pressed and
                     //the minimum information is complete
@@ -477,44 +483,27 @@ public class MainActivity extends AppCompatActivity {
 
                     //getting the time using 24h time format
                     DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                    String currentTime = timeFormat.format(currentTimeandDate);
+                    currentTime = timeFormat.format(currentTimeandDate);
 
                     //getting the date
                     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    String currentDate = dateFormat.format(currentTimeandDate);
+                    currentDate = dateFormat.format(currentTimeandDate);
 
                     Call<Void> completeQuestionnaireCall = questionsGoogleForm.completeQuestionnaire(currentDate,
-                            selectedBlock,selectedFloor,currentTime,plateComplete,vehicleText,velocityText,colorText,
-                            beltText,offenderText,selectedResponsible);
+                            selectedBlock, selectedFloor, currentTime, plateComplete, vehicleText, velocityText, colorText,
+                            beltText, offenderText, selectedResponsible);
 
                     completeQuestionnaireCall.enqueue(callCallback);
 
-                    //setting the writable string and the file where data will be saved
-                    String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
-                            currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
-                            colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
-                    FileOutputStream outputStream;
 
-                    try {
-                        //writting data to the file
-                        outputStream = openFileOutput(filename, Context.MODE_APPEND);
-                        outputStream.write(dataSave.getBytes());
-                        outputStream.close();
-
-                        Toast.makeText(getApplicationContext(), "Dados Salvos", Toast.LENGTH_LONG).show();
-
-                        //erasing the values in some fields
-                        radioGroupBelt.clearCheck();
-                        radioGroupOffender.clearCheck();
-                        plateLetter.getText().clear();
-                        plateNumber.getText().clear();
-                        autoCompleteVehicle.getText().clear();
-                        velocity.getText().clear();
-                        autoCompleteColor.getText().clear();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    //erasing the values in some fields
+                    radioGroupBelt.clearCheck();
+                    radioGroupOffender.clearCheck();
+                    plateLetter.getText().clear();
+                    plateNumber.getText().clear();
+                    autoCompleteVehicle.getText().clear();
+                    velocity.getText().clear();
+                    autoCompleteColor.getText().clear();
 
 
                 }
@@ -549,14 +538,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final Callback<Void> callCallback = new Callback<Void>() {
+         //receiving the callback from the server, if there are any errors, it will save data in the internal memory
         @Override
         public void onResponse(Call<Void> call, Response<Void> response) {
-            Log.d("xxx", "onResponse: Submited " + response);
+            Log.d("CallbackGoogle", "onResponse: Submited " + response);
+            Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha", Toast.LENGTH_LONG).show();
         }
 
         @Override
         public void onFailure(Call<Void> call, Throwable t) {
-            Log.e("xxx", "onFailure: Failed", t);
+            Log.e("CallbackGoogle", "onFailure: Failed", t);
+
+            //setting the writable string and the file where data will be saved
+            String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
+                    currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
+                    colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
+            FileOutputStream outputStream;
+
+            try {
+                //writting data to the file
+                outputStream = openFileOutput(filename, Context.MODE_APPEND);
+                outputStream.write(dataSave.getBytes());
+                outputStream.close();
+
+                Toast.makeText(getApplicationContext(), "Dados Salvos na Memória", Toast.LENGTH_LONG).show();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
     };
 }
