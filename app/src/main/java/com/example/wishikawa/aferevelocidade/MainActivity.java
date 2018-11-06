@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -30,6 +31,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class MainActivity extends AppCompatActivity {
     private String plateLetterText;
     private String plateNumberText;
@@ -47,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //using Retrofit 2 as the Http web service
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://docs.google.com/forms/d/e/")
+                .build();
+        final QuestionsGoogleForm questionsGoogleForm = retrofit.create(QuestionsGoogleForm.class);
 
         //associating the spinner
         final Spinner blockSpinner = (Spinner) findViewById(R.id.spinner_block);
@@ -403,6 +415,7 @@ public class MainActivity extends AppCompatActivity {
         //declaring the name of the file in internal storage to have data saved and read
         final String filename = "DadosVelocidade";
         Button btnSaveData = (Button) findViewById(R.id.btn_recordData);
+
         btnSaveData.setOnClickListener(new View.OnClickListener() {
 
 
@@ -470,8 +483,13 @@ public class MainActivity extends AppCompatActivity {
                     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                     String currentDate = dateFormat.format(currentTimeandDate);
 
-                    //setting the writable string and the file where data will be saved
+                    Call<Void> completeQuestionnaireCall = questionsGoogleForm.completeQuestionnaire(currentDate,
+                            selectedBlock,selectedFloor,currentTime,plateComplete,vehicleText,velocityText,colorText,
+                            beltText,offenderText,selectedResponsible);
 
+                    completeQuestionnaireCall.enqueue(callCallback);
+
+                    //setting the writable string and the file where data will be saved
                     String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
                             currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
                             colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
@@ -529,7 +547,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    private final Callback<Void> callCallback = new Callback<Void>() {
+        @Override
+        public void onResponse(Call<Void> call, Response<Void> response) {
+            Log.d("xxx", "onResponse: Submited " + response);
+        }
+
+        @Override
+        public void onFailure(Call<Void> call, Throwable t) {
+            Log.e("xxx", "onFailure: Failed", t);
+        }
+    };
 }
-
-
-
