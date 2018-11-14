@@ -522,9 +522,42 @@ public class MainActivity extends AppCompatActivity {
                     int c;
 
                     String temp = "";
+                    ArrayList<String> dataArray = new ArrayList<>();
+
                     while ((c = fileInputStream.read()) != -1) {
-                        temp += Character.toString((char) c);
+                        String current = Character.toString((char) c);
+
+                        if (!current.contentEquals(";")) {
+                            temp += current;
+                        }
+
+                        if (current.contentEquals(";")) {
+                            dataArray.add(temp);
+
+                            temp = "";
+
+                            System.out.println("Line read");
+                        }
+
+                        if (current.contentEquals("\n")) {
+                            String savedDate = dataArray.get(0);
+                            String savedBlock = dataArray.get(1);
+                            String savedFloor = dataArray.get(2);
+                            String savedTime = dataArray.get(3);
+                            String savedPlate = dataArray.get(4);
+                            String savedVehicle = dataArray.get(5);
+                            String savedVelocity = dataArray.get(6);
+                            String savedColor = dataArray.get(7);
+                            String savedBelt = dataArray.get(8);
+                            String savedOffender = dataArray.get(9);
+                            String savedResp = dataArray.get(10);
+
+
+
+                        }
+
                     }
+
                     System.out.println(temp);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -538,7 +571,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final Callback<Void> callCallback = new Callback<Void>() {
-         //receiving the callback from the server, if there are any errors, it will save data in the internal memory
+        //receiving the callback from the server, if there are any errors, it will save data in the internal memory
         @Override
         public void onResponse(Call<Void> call, Response<Void> response) {
             Log.d("CallbackGoogle", "onResponse: Submited " + response);
