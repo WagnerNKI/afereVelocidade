@@ -2,7 +2,6 @@ package com.example.wishikawa.aferevelocidade;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.nfc.Tag;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,7 +52,10 @@ public class MainActivity extends AppCompatActivity {
     private String currentTime;
 
     //declaring the name of the file in internal storage to have data saved and read
-    private String filename = "DadosVelocidade";
+    private String dadosVelocidade = "DadosVelocidade";
+
+    //boolean that checks if the "Export Data" button was pressed
+    private boolean pressedExportDataBtn = false;
 
 
     @Override
@@ -517,8 +519,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                pressedExportDataBtn = true;
+
                 try {
-                    FileInputStream fileInputStream = openFileInput(filename);
+                    FileInputStream fileInputStream = openFileInput(dadosVelocidade);
                     int c;
 
                     String temp = "";
@@ -533,12 +537,9 @@ public class MainActivity extends AppCompatActivity {
 
                             temp = "";
 
-                            System.out.println("Line read");
-                        }else {
-                            temp += current;
-                        }
+                        } else if (current.contentEquals("\n")) {
+                            dataArray.add(temp);
 
-                        if (current.contentEquals("\n")) {
                             String savedDate = dataArray.get(0);
                             String savedBlock = dataArray.get(1);
                             String savedFloor = dataArray.get(2);
@@ -552,12 +553,24 @@ public class MainActivity extends AppCompatActivity {
                             String savedResp = dataArray.get(10);
 
 
+                            Call<Void> completeQuestionnaireCall = questionsGoogleForm.completeQuestionnaire(savedDate,
+                                    savedBlock, savedFloor, savedTime, savedPlate, savedVehicle, savedVelocity,
+                                    savedColor, savedBelt, savedOffender, savedResp);
 
+                            completeQuestionnaireCall.enqueue(callCallback);
+
+                            temp = "";
+                            dataArray.clear();
+
+                            //check
+                        } else {
+                            temp += current;
                         }
 
                     }
 
-                    System.out.println(temp);
+                    deleteFile(dadosVelocidade);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -575,31 +588,43 @@ public class MainActivity extends AppCompatActivity {
         public void onResponse(Call<Void> call, Response<Void> response) {
             Log.d("CallbackGoogle", "onResponse: Submited " + response);
             Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha", Toast.LENGTH_LONG).show();
+
+
         }
 
         @Override
         public void onFailure(Call<Void> call, Throwable t) {
             Log.e("CallbackGoogle", "onFailure: Failed", t);
 
-            //setting the writable string and the file where data will be saved
-            String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
-                    currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
-                    colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
-            FileOutputStream outputStream;
+            if (pressedExportDataBtn) {
 
-            try {
-                //writting data to the file
-                outputStream = openFileOutput(filename, Context.MODE_APPEND);
-                outputStream.write(dataSave.getBytes());
-                outputStream.close();
+                Toast.makeText(getApplicationContext(), "Erro ao salvar.\nChecar conexão com a Internet", Toast.LENGTH_LONG).show();
+                pressedExportDataBtn = false;
 
-                Toast.makeText(getApplicationContext(), "Dados Salvos na Memória", Toast.LENGTH_LONG).show();
+            } else {
+
+                //setting the writable string and the file where data will be saved
+                String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
+                        currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
+                        colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
+                FileOutputStream outputStream;
+
+                try {
+                    //writting data to the file
+                    outputStream = openFileOutput(dadosVelocidade, Context.MODE_APPEND);
+                    outputStream.write(dataSave.getBytes());
+                    outputStream.close();
+
+                    Toast.makeText(getApplicationContext(), "Dados Salvos na Memória", Toast.LENGTH_LONG).show();
 
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         }
+
 
     };
 }
