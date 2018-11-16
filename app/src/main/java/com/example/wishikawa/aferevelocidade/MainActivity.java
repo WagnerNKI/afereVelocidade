@@ -527,9 +527,6 @@ public class MainActivity extends AppCompatActivity {
                     while ((c = fileInputStream.read()) != -1) {
                         String current = Character.toString((char) c);
 
-                        if (!current.contentEquals(";")) {
-                            temp += current;
-                        }
 
                         if (current.contentEquals(";")) {
                             dataArray.add(temp);
@@ -537,6 +534,8 @@ public class MainActivity extends AppCompatActivity {
                             temp = "";
 
                             System.out.println("Line read");
+                        }else {
+                            temp += current;
                         }
 
                         if (current.contentEquals("\n")) {
