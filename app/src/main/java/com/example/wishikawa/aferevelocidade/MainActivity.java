@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private String dadosVelocidade = "DadosVelocidade";
 
     //boolean that checks if the "Export Data" button was pressed
-    private boolean pressedExportDataBtn = false;
+    public volatile boolean pressedExportDataBtn = false;
+
+    public volatile boolean successfulExportedData = true;
 
 
     @Override
@@ -438,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
                 //in case some values are empty, display an alert show which ones need to be completed
                 String emptyValues = "";
                 if (selectedBlock == "" || selectedFloor == "" || plateLetterText == null
-                        || plateNumberText == null || vehicleText.isEmpty() || velocityText == null
+                        || plateNumberText == null || vehicleText.isEmpty() || velocityText.isEmpty()
                         || offenderText == null) {
 
                     if (selectedBlock == "") {
@@ -457,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
                         emptyValues += "Veículo, ";
                     }
 
-                    if (velocityText == null) {
+                    if (velocityText.isEmpty()) {
                         emptyValues += "Velocidade, ";
                     }
                     if (offenderText == null) {
@@ -522,6 +524,9 @@ public class MainActivity extends AppCompatActivity {
                 pressedExportDataBtn = true;
 
                 try {
+
+                    //reads the data from the internal memory file and for every line, sends it to
+                    //the Google sheet
                     FileInputStream fileInputStream = openFileInput(dadosVelocidade);
                     int c;
 
@@ -529,6 +534,11 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<String> dataArray = new ArrayList<>();
 
                     while ((c = fileInputStream.read()) != -1) {
+
+                        if (!successfulExportedData) {
+                            break;
+                        }
+
                         String current = Character.toString((char) c);
 
 
@@ -569,12 +579,16 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    deleteFile(dadosVelocidade);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
+                pressedExportDataBtn = false;
+
+                if (successfulExportedData) {
+                    deleteFile(dadosVelocidade);
+                }
 
             }
         });
@@ -587,19 +601,24 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onResponse(Call<Void> call, Response<Void> response) {
             Log.d("CallbackGoogle", "onResponse: Submited " + response);
+
             Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha", Toast.LENGTH_LONG).show();
 
-
+            successfulExportedData = true;
         }
 
         @Override
         public void onFailure(Call<Void> call, Throwable t) {
             Log.e("CallbackGoogle", "onFailure: Failed", t);
 
+            //checking whether the Export Data button was pressed or not,
+            //if it was, just shows a message, if it wasn't saves the data to the internal memory
             if (pressedExportDataBtn) {
 
-                Toast.makeText(getApplicationContext(), "Erro ao salvar.\nChecar conexão com a Internet", Toast.LENGTH_LONG).show();
-                pressedExportDataBtn = false;
+                Toast.makeText(getApplicationContext(), "Erro ao salvar.\nChecar conexão com a Internet",
+                        Toast.LENGTH_LONG).show();
+
+                successfulExportedData = false;
 
             } else {
 
@@ -610,7 +629,7 @@ public class MainActivity extends AppCompatActivity {
                 FileOutputStream outputStream;
 
                 try {
-                    //writting data to the file
+                    //writing data to the file
                     outputStream = openFileOutput(dadosVelocidade, Context.MODE_APPEND);
                     outputStream.write(dataSave.getBytes());
                     outputStream.close();
