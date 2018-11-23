@@ -522,6 +522,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 pressedExportDataBtn = true;
+                successfulExportedData = true;
 
                 try {
 
@@ -536,7 +537,9 @@ public class MainActivity extends AppCompatActivity {
                     while ((c = fileInputStream.read()) != -1) {
 
                         if (!successfulExportedData) {
+
                             pressedExportDataBtn = false;
+
                             break;
                         }
 
@@ -579,15 +582,18 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     }
-                    
-                if (successfulExportedData && c == -1) {
-                    deleteFile(dadosVelocidade);
-                }
+
+                    if (successfulExportedData && c == -1) {
+                        pressedExportDataBtn = false;
+                        deleteFile(dadosVelocidade);
+                    }
 
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(),"Dados já Exportados",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Dados já Exportados", Toast.LENGTH_LONG).show();
+                    pressedExportDataBtn = false;
+
                 }
 
 
