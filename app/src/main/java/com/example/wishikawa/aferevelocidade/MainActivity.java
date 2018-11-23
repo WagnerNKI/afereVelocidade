@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private String dadosVelocidade = "DadosVelocidade";
 
     //boolean that checks if the "Export Data" button was pressed
-    public volatile boolean pressedExportDataBtn = false;
+    private static boolean pressedExportDataBtn = false;
 
-    public volatile boolean successfulExportedData = true;
+    private static boolean successfulExportedData = true;
 
 
     @Override
@@ -536,6 +536,7 @@ public class MainActivity extends AppCompatActivity {
                     while ((c = fileInputStream.read()) != -1) {
 
                         if (!successfulExportedData) {
+                            pressedExportDataBtn = false;
                             break;
                         }
 
@@ -578,17 +579,17 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     }
+                    
+                if (successfulExportedData && c == -1) {
+                    deleteFile(dadosVelocidade);
+                }
 
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),"Dados já Exportados",Toast.LENGTH_LONG).show();
                 }
 
-                pressedExportDataBtn = false;
-
-                if (successfulExportedData) {
-                    deleteFile(dadosVelocidade);
-                }
 
             }
         });
@@ -605,6 +606,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha", Toast.LENGTH_LONG).show();
 
             successfulExportedData = true;
+            pressedExportDataBtn = false;
         }
 
         @Override
@@ -642,6 +644,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+
+            pressedExportDataBtn = false;
         }
 
 
