@@ -54,10 +54,13 @@ public class MainActivity extends AppCompatActivity {
     //declaring the name of the file in internal storage to have data saved and read
     private String dadosVelocidade = "DadosVelocidade";
 
-    //boolean that checks if the "Export Data" button was pressed
-    private static boolean pressedExportDataBtn = false;
+public static class BooleanHolder {
+    public Boolean value;
+}
 
-    private static boolean successfulExportedData = true;
+    //boolean that checks if the "Export Data" button was pressed
+BooleanHolder pressedExportDataBtn = new BooleanHolder();
+BooleanHolder successfulExportedData = new BooleanHolder();
 
 
     @Override
@@ -521,8 +524,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                pressedExportDataBtn = true;
-                successfulExportedData = true;
+                pressedExportDataBtn.value = true;
+                successfulExportedData.value = true;
 
                 try {
 
@@ -536,9 +539,9 @@ public class MainActivity extends AppCompatActivity {
 
                     while ((c = fileInputStream.read()) != -1) {
 
-                        if (!successfulExportedData) {
+                        if (!successfulExportedData.value) {
 
-                            pressedExportDataBtn = false;
+                            pressedExportDataBtn.value = false;
 
                             break;
                         }
@@ -583,8 +586,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    if (successfulExportedData && c == -1) {
-                        pressedExportDataBtn = false;
+                    if (successfulExportedData.value && c == -1) {
+                        pressedExportDataBtn.value = false;
                         deleteFile(dadosVelocidade);
                     }
 
@@ -592,7 +595,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Dados já Exportados", Toast.LENGTH_LONG).show();
-                    pressedExportDataBtn = false;
+                    pressedExportDataBtn.value = false;
 
                 }
 
@@ -611,8 +614,8 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha", Toast.LENGTH_LONG).show();
 
-            successfulExportedData = true;
-            pressedExportDataBtn = false;
+            successfulExportedData.value = true;
+            pressedExportDataBtn.value = false;
         }
 
         @Override
@@ -621,12 +624,12 @@ public class MainActivity extends AppCompatActivity {
 
             //checking whether the Export Data button was pressed or not,
             //if it was, just shows a message, if it wasn't saves the data to the internal memory
-            if (pressedExportDataBtn) {
+            if (pressedExportDataBtn.value) {
 
                 Toast.makeText(getApplicationContext(), "Erro ao salvar.\nChecar conexão com a Internet",
                         Toast.LENGTH_LONG).show();
 
-                successfulExportedData = false;
+                successfulExportedData.value = false;
 
             } else {
 
@@ -651,9 +654,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            pressedExportDataBtn = false;
+            pressedExportDataBtn.value = false;
         }
 
 
     };
 }
+
