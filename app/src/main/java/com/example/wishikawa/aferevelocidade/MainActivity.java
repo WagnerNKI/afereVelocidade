@@ -24,12 +24,14 @@ import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,13 +56,10 @@ public class MainActivity extends AppCompatActivity {
     //declaring the name of the file in internal storage to have data saved and read
     private String dadosVelocidade = "DadosVelocidade";
 
-public static class BooleanHolder {
-    public Boolean value;
-}
 
     //boolean that checks if the "Export Data" button was pressed
-BooleanHolder pressedExportDataBtn = new BooleanHolder();
-BooleanHolder successfulExportedData = new BooleanHolder();
+    AtomicBoolean pressedExportDataBtn = new AtomicBoolean(false);
+    AtomicBoolean successfulExportedData = new AtomicBoolean(true);
 
 
     @Override
@@ -442,8 +441,8 @@ BooleanHolder successfulExportedData = new BooleanHolder();
 
                 //in case some values are empty, display an alert show which ones need to be completed
                 String emptyValues = "";
-                if (selectedBlock == "" || selectedFloor == "" || plateLetterText == null
-                        || plateNumberText == null || vehicleText.isEmpty() || velocityText.isEmpty()
+                if (selectedBlock == "" || selectedFloor == "" || plateLetterText.isEmpty()
+                        || plateNumberText.isEmpty() || vehicleText.isEmpty() || velocityText.isEmpty()
                         || offenderText == null) {
 
                     if (selectedBlock == "") {
@@ -454,7 +453,7 @@ BooleanHolder successfulExportedData = new BooleanHolder();
                         emptyValues += "Piso, ";
                     }
 
-                    if (plateLetterText == null || plateNumberText == null) {
+                    if (plateLetterText.isEmpty() || plateNumberText.isEmpty()) {
                         emptyValues += "Placa, ";
                     }
 
@@ -500,6 +499,7 @@ BooleanHolder successfulExportedData = new BooleanHolder();
                             selectedBlock, selectedFloor, currentTime, plateComplete, vehicleText, velocityText, colorText,
                             beltText, offenderText, selectedResponsible);
 
+                    // calling the asynchronous export method
                     completeQuestionnaireCall.enqueue(callCallback);
 
 
@@ -524,8 +524,8 @@ BooleanHolder successfulExportedData = new BooleanHolder();
             @Override
             public void onClick(View v) {
 
-                pressedExportDataBtn.value = true;
-                successfulExportedData.value = true;
+                pressedExportDataBtn.set(true);
+                successfulExportedData.set(true);
 
                 try {
 
@@ -539,9 +539,9 @@ BooleanHolder successfulExportedData = new BooleanHolder();
 
                     while ((c = fileInputStream.read()) != -1) {
 
-                        if (!successfulExportedData.value) {
+                        if (!successfulExportedData.get()) {
 
-                            pressedExportDataBtn.value = false;
+                            pressedExportDataBtn.set(false);
 
                             break;
                         }
@@ -574,20 +574,39 @@ BooleanHolder successfulExportedData = new BooleanHolder();
                                     savedBlock, savedFloor, savedTime, savedPlate, savedVehicle, savedVelocity,
                                     savedColor, savedBelt, savedOffender, savedResp);
 
-                            completeQuestionnaireCall.enqueue(callCallback);
+                            try {
+                                completeQuestionnaireCall.execute();
+
+                                if (completeQuestionnaireCall.isExecuted()) {
+                                    Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha",
+                                            Toast.LENGTH_LONG).show();
+
+                                    successfulExportedData.set(true);
+                                }
+
+
+                                //check
+                            } catch (IOException e) {
+                                e.printStackTrace();
+
+                                Toast.makeText(getApplicationContext(), "Erro ao salvar.\nChecar conexão com a Internet",
+                                        Toast.LENGTH_LONG).show();
+
+                                successfulExportedData.set(false);
+
+                            }
 
                             temp = "";
                             dataArray.clear();
 
-                            //check
                         } else {
                             temp += current;
                         }
 
                     }
 
-                    if (successfulExportedData.value && c == -1) {
-                        pressedExportDataBtn.value = false;
+                    if (successfulExportedData.get() && c == -1) {
+                        pressedExportDataBtn.set(false);
                         deleteFile(dadosVelocidade);
                     }
 
@@ -595,7 +614,7 @@ BooleanHolder successfulExportedData = new BooleanHolder();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Dados já Exportados", Toast.LENGTH_LONG).show();
-                    pressedExportDataBtn.value = false;
+                    pressedExportDataBtn.set(false);
 
                 }
 
@@ -612,10 +631,8 @@ BooleanHolder successfulExportedData = new BooleanHolder();
         public void onResponse(Call<Void> call, Response<Void> response) {
             Log.d("CallbackGoogle", "onResponse: Submited " + response);
 
-            Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha", Toast.LENGTH_LONG).show();
-
-            successfulExportedData.value = true;
-            pressedExportDataBtn.value = false;
+            Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha",
+                    Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -624,37 +641,29 @@ BooleanHolder successfulExportedData = new BooleanHolder();
 
             //checking whether the Export Data button was pressed or not,
             //if it was, just shows a message, if it wasn't saves the data to the internal memory
-            if (pressedExportDataBtn.value) {
-
-                Toast.makeText(getApplicationContext(), "Erro ao salvar.\nChecar conexão com a Internet",
-                        Toast.LENGTH_LONG).show();
-
-                successfulExportedData.value = false;
-
-            } else {
-
-                //setting the writable string and the file where data will be saved
-                String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
-                        currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
-                        colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
-                FileOutputStream outputStream;
-
-                try {
-                    //writing data to the file
-                    outputStream = openFileOutput(dadosVelocidade, Context.MODE_APPEND);
-                    outputStream.write(dataSave.getBytes());
-                    outputStream.close();
-
-                    Toast.makeText(getApplicationContext(), "Dados Salvos na Memória", Toast.LENGTH_LONG).show();
 
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            //setting the writable string and the file where data will be saved
+            String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
+                    currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
+                    colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
+            FileOutputStream outputStream;
 
+            try {
+                //writing data to the file
+                outputStream = openFileOutput(dadosVelocidade, Context.MODE_APPEND);
+                outputStream.write(dataSave.getBytes());
+                outputStream.close();
+
+                Toast.makeText(getApplicationContext(), "Dados Salvos na Memória", Toast.LENGTH_LONG).show();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            pressedExportDataBtn.value = false;
+
+            pressedExportDataBtn.set(false);
         }
 
 
