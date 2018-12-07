@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
     //boolean that checks if the data was successfully exported
     AtomicBoolean pressedExportDataBtn = new AtomicBoolean(false);
-    AtomicBoolean successfulExportedData = new AtomicBoolean(true);
 
 
     @Override
@@ -126,7 +125,8 @@ public class MainActivity extends AppCompatActivity {
                 "Gilson",
                 "Américo",
                 "Wesley",
-                "Maurílio"
+                "Maurílio",
+                "Manoel Marcos"
         };
 
         final String[] respMaternidade = new String[]{
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 "Joel",
                 "Silvano",
                 "Wagner",
-                "Manoel Marcos",
+                "William Barreto",
                 "Pacheco",
                 "Miranda",
                 "Rogério"
@@ -433,6 +433,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                pressedExportDataBtn.set(false);
+
                 //in case vehicle and color are not completed using auto complete,
                 //get the values written
                 vehicleText = autoCompleteVehicle.getText().toString();
@@ -524,9 +526,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
                 pressedExportDataBtn.set(true);
-                successfulExportedData.set(true);
 
                 try {
 
@@ -603,9 +603,13 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha", Toast.LENGTH_SHORT).show();
 
-                    if (response.isSuccessful()) {
+                    // checking if this response is due to the "Export Data" button was preesed
+                    // and if the data was sent to the worksheet successfully
+                    if (pressedExportDataBtn.get() && response.isSuccessful()) {
+
                         pressedExportDataBtn.set(false);
                         deleteFile(dadosVelocidade);
+
                     }
         }
 
