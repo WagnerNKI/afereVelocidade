@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private String dadosVelocidade = "DadosVelocidade";
 
 
-    //boolean that checks if the "Export Data" button was pressed
+    //boolean that checks if the data was successfully exported
     AtomicBoolean pressedExportDataBtn = new AtomicBoolean(false);
     AtomicBoolean successfulExportedData = new AtomicBoolean(true);
 
@@ -524,6 +524,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 pressedExportDataBtn.set(true);
                 successfulExportedData.set(true);
 
@@ -539,15 +540,7 @@ public class MainActivity extends AppCompatActivity {
 
                     while ((c = fileInputStream.read()) != -1) {
 
-                        if (!successfulExportedData.get()) {
-
-                            pressedExportDataBtn.set(false);
-
-                            break;
-                        }
-
                         String current = Character.toString((char) c);
-
 
                         if (current.contentEquals(";")) {
                             dataArray.add(temp);
@@ -574,41 +567,18 @@ public class MainActivity extends AppCompatActivity {
                                     savedBlock, savedFloor, savedTime, savedPlate, savedVehicle, savedVelocity,
                                     savedColor, savedBelt, savedOffender, savedResp);
 
-                            try {
-                                completeQuestionnaireCall.execute();
-
-                                if (completeQuestionnaireCall.isExecuted()) {
-                                    Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha",
-                                            Toast.LENGTH_LONG).show();
-
-                                    successfulExportedData.set(true);
-                                }
-
-
-                                //check
-                            } catch (IOException e) {
-                                e.printStackTrace();
-
-                                Toast.makeText(getApplicationContext(), "Erro ao salvar.\nChecar conexão com a Internet",
-                                        Toast.LENGTH_LONG).show();
-
-                                successfulExportedData.set(false);
-
-                            }
+                            completeQuestionnaireCall.enqueue(callCallback);
 
                             temp = "";
                             dataArray.clear();
 
+                            //check
                         } else {
                             temp += current;
                         }
 
                     }
 
-                    if (successfulExportedData.get() && c == -1) {
-                        pressedExportDataBtn.set(false);
-                        deleteFile(dadosVelocidade);
-                    }
 
 
                 } catch (Exception e) {
@@ -631,42 +601,54 @@ public class MainActivity extends AppCompatActivity {
         public void onResponse(Call<Void> call, Response<Void> response) {
             Log.d("CallbackGoogle", "onResponse: Submited " + response);
 
-            Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Dados Salvos na Planilha", Toast.LENGTH_SHORT).show();
+
+                    if (response.isSuccessful()) {
+                        pressedExportDataBtn.set(false);
+                        deleteFile(dadosVelocidade);
+                    }
         }
 
         @Override
         public void onFailure(Call<Void> call, Throwable t) {
             Log.e("CallbackGoogle", "onFailure: Failed", t);
 
-            //checking whether the Export Data button was pressed or not,
-            //if it was, just shows a message, if it wasn't saves the data to the internal memory
-
-
-            //setting the writable string and the file where data will be saved
-            String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
-                    currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
-                    colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
-            FileOutputStream outputStream;
-
-            try {
-                //writing data to the file
-                outputStream = openFileOutput(dadosVelocidade, Context.MODE_APPEND);
-                outputStream.write(dataSave.getBytes());
-                outputStream.close();
-
-                Toast.makeText(getApplicationContext(), "Dados Salvos na Memória", Toast.LENGTH_LONG).show();
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (call.isCanceled()){
+                pressedExportDataBtn.set(false);
             }
 
+            //checking whether the Export Data button was pressed or not,
+            //if it was, just shows a message, if it wasn't saves the data to the internal memory
+            if (pressedExportDataBtn.get()) {
 
-            pressedExportDataBtn.set(false);
+                Toast.makeText(getApplicationContext(), "Erro ao salvar.\nChecar conexão com a Internet",
+                        Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                //setting the writable string and the file where data will be saved
+                String dataSave = currentDate + ";" + selectedBlock + ";" + selectedFloor + ";" +
+                        currentTime + ";" + plateComplete + ";" + vehicleText + ";" + velocityText + ";" +
+                        colorText + ";" + beltText + ";" + offenderText + ";" + selectedResponsible + "\n";
+                FileOutputStream outputStream;
+
+                try {
+                    //writing data to the file
+                    outputStream = openFileOutput(dadosVelocidade, Context.MODE_APPEND);
+                    outputStream.write(dataSave.getBytes());
+                    outputStream.close();
+
+                    Toast.makeText(getApplicationContext(), "Dados Salvos na Memória", Toast.LENGTH_LONG).show();
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
         }
 
 
     };
 }
-
